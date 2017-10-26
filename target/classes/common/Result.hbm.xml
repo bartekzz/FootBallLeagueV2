@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="common.Result" table="result" catalog="league">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="team1Score" type="java.lang.Integer">
+            <column name="team1_score" length="2" not-null="true" unique="false" />
+        </property>
+        <property name="team2Score" type="java.lang.Integer">
+            <column name="team2_score" length="2" not-null="true" unique="false" />
+        </property>
+        <property name="gameId" type="java.lang.Integer">
+            <column name="game_id" length="11" not-null="true" unique="true"/>
+        </property>
+        <one-to-one name="Game" class="common.Game" cascade="all" />
+    </class>
+
+    <query name="getAllResults">
+        <![CDATA[from Result result]]>
+    </query>
+
+    <query name="deleteAllResults">
+        <![CDATA[delete from Result result]]>
+    </query>
+
+    <query name="getResultTeams">
+        <![CDATA[from Result result, Game game where result.gameId = game.id]]>
+    </query>
+
+    <query name="updateResultScore1">
+        <![CDATA[update Result result set team1Score = :score1 where result.gameId = :gameId]]>
+    </query>
+
+    <query name="updateResultScore2">
+        <![CDATA[update Result result set team2Score = :score2 where result.gameId = :gameId]]>
+    </query>
+
+
+</hibernate-mapping>
