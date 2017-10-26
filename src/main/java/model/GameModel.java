@@ -22,7 +22,7 @@ public class GameModel {
      * This returns a queue with all Game-objects in DB
      * @return queue with Game-objects
      */
-    public static Queue<Game> queueAllGames() {
+    public Queue<Game> queueAllGames() {
 
         Session session = null;
         Transaction tx = null;
@@ -63,7 +63,7 @@ public class GameModel {
      * this returns a list with all Game-objects in DB
      * @return list with Game-objects
      */
-    public static List<Game> getAllGames() {
+    public List<Game> getAllGames() {
 
         Session session = null;
         Transaction tx = null;

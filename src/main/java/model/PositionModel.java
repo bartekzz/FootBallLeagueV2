@@ -1,6 +1,7 @@
 package model;
 
 import common.Position;
+import common.Team;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -13,7 +14,7 @@ public class PositionModel {
     public PositionModel() {
     }
 
-    public static String getPositionType(Integer positionId) {
+    public String getPositionType(Integer positionId) {
         Session session = null;
         Transaction tx = null;
 
@@ -22,13 +23,15 @@ public class PositionModel {
             tx = session.beginTransaction();
 
         Query query = session.getNamedQuery("getPositionTypeById");
-        //Query query = session.createQuery("from Stadium stadium where stadium.id = :stadiumId");
         query.setParameter("positionId", positionId);
         List<Position> position =  query.list();
 
         tx.commit();
 
-        return position.get(0).getType();
+        Position positionFirst = position.stream().findFirst().get();
+
+        //return position.get(0).getType();
+        return positionFirst.getType();
 
         } catch(RuntimeException e){
             try {

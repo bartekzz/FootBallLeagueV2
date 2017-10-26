@@ -7,6 +7,7 @@ import org.hibernate.Transaction;
 import persistance.HibernateUtil;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class holds all methods associated with the Team class
@@ -20,7 +21,7 @@ public class TeamModel {
      * @param teamId the team id
      * @return the team name
      */
-    public static String getTeamName(Integer teamId) {
+    public String getTeamName(Integer teamId) {
         Session session = null;
         Transaction tx = null;
 
@@ -31,11 +32,13 @@ public class TeamModel {
             Query query = session.getNamedQuery("getTeamNameById");
             query.setParameter("teamId", teamId);
             List<Team> team =  query.list();
-            //System.out.println("Team name: " + team.get(0).getName());
 
             tx.commit();
 
-            return team.get(0).getName();
+            Team teamFirst = team.stream().findFirst().get();
+
+            //return team.get(0).getName();
+            return teamFirst.getName();
 
         } catch(RuntimeException e){
             try {

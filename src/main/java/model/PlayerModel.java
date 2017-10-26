@@ -21,7 +21,7 @@ public class PlayerModel {
      * @param name the name of the player to search for
      * @return list of Player-objects
      */
-    public static List<Player> findPlayerByName(String name) {
+    public List<Player> findPlayerByName(String name) {
         Session session = null;
         Transaction tx = null;
 

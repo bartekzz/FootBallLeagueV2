@@ -18,12 +18,17 @@ import java.util.*;
  */
 public class ResultModel {
 
-    ResultModel() {}
+    private TeamModel teamModel;
+
+    public ResultModel() {
+
+        teamModel = new TeamModel();    
+    }
 
     /**
      * This deletes all the entries in the Result-table in DB
      */
-    public static void deleteAllResults() {
+    public void deleteAllResults() {
         Session session = null;
         Transaction tx = null;
 
@@ -55,7 +60,7 @@ public class ResultModel {
      * This creates and stores Results in DB from every Game-object in the queue
      * @param queue the queue with Game-objects
      */
-    public static void createAllResults(Queue<Game> queue) {
+    public void createAllResults(Queue<Game> queue) {
         Session session = null;
         Transaction tx = null;
 
@@ -89,7 +94,7 @@ public class ResultModel {
      * This get a list of Results-objects from DB
      * @return the list with Result-objects
      */
-    public static List<Result> getAllResults() {
+    public List<Result> getAllResults() {
         Session session = null;
         Transaction tx = null;
 
@@ -123,7 +128,7 @@ public class ResultModel {
      * @param result the Result-object to analyze
      * @return the integer representation of which winning team or draw
      */
-    public static Integer teamWon(Result result) {
+    public Integer teamWon(Result result) {
 
         Session session = null;
         Transaction tx = null;
@@ -164,7 +169,7 @@ public class ResultModel {
      * as we need the team id later on from Game-object
      * @return list of array object holding Game and Result
      */
-    public static List<Object[]> getResultTeams() {
+    public List<Object[]> getResultTeams() {
 
         Session session = HibernateUtil.getSessionFactory().openSession();
         //session.beginTransaction();
@@ -184,7 +189,7 @@ public class ResultModel {
      * @param resultList a list with Result and Game objects
      * @return points stored in a hash table with team-id as key and points as value
      */
-    public static Map<Integer, Integer> createScoreTable(List<Object[]> resultList) {
+    public Map<Integer, Integer> createScoreTable(List<Object[]> resultList) {
         Map<Integer, Integer> scoreTable = new Hashtable<>();
 
         for(Object[] result : resultList) {
@@ -216,7 +221,7 @@ public class ResultModel {
      * @param scoreTable a hash table with team id and points
      * @return a sorted list with cScore-object
      */
-    public static List<cScore> sortScoreTable(Map<Integer, Integer> scoreTable) {
+    public List<cScore> sortScoreTable(Map<Integer, Integer> scoreTable) {
 
         Map<Integer, Integer> sortedScoreTable = Sort.sortByValue(scoreTable);
         System.out.println("Scoretable: " + sortedScoreTable);
@@ -228,9 +233,9 @@ public class ResultModel {
         Iterator<Integer> iterator = keySet.iterator();
         while(iterator.hasNext()) {
             Integer key = iterator.next();
-            System.out.println("Team: " + TeamModel.getTeamName(key) + ", score: " + sortedScoreTable.get(key));
+            System.out.println("Team: " + teamModel.getTeamName(key) + ", score: " + sortedScoreTable.get(key));
             // Add cScore objects to scoreList
-            scoreList.add(new cScore(TeamModel.getTeamName(key), sortedScoreTable.get(key)));
+            scoreList.add(new cScore(teamModel.getTeamName(key), sortedScoreTable.get(key)));
         }
 
 
@@ -242,7 +247,7 @@ public class ResultModel {
      * This updates scores in Result-table in DB
      * @param scoreList score list with a hash-table with game id and scores (input through TextFields)
      */
-    public static void updateScores(List<Map<Integer, List<TextField>>> scoreList) {
+    public void updateScores(List<Map<Integer, List<TextField>>> scoreList) {
 
         Session session = null;
         Transaction tx = null;

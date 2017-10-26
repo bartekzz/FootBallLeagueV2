@@ -21,7 +21,7 @@ public class StadiumModel {
      * @param stadiumId the id of a stadium
      * @return the stadium name
      */
-    public static String getStadiumName(Integer stadiumId) {
+    public String getStadiumName(Integer stadiumId) {
         Session session = null;
         Transaction tx = null;
 
@@ -30,14 +30,15 @@ public class StadiumModel {
             tx = session.beginTransaction();
 
             Query query = session.getNamedQuery("getStadiumNameById");
-            //Query query = session.createQuery("from Stadium stadium where stadium.id = :stadiumId");
             query.setParameter("stadiumId", stadiumId);
             List<Stadium> stadium =  query.list();
-            //System.out.println("Team name: " + team.get(0).getName());
 
             tx.commit();
 
-            return stadium.get(0).getName();
+            Stadium stadiumFirst = stadium.stream().findFirst().get();
+
+            //return stadium.get(0).getName();
+            return stadiumFirst.getName();
 
         } catch(RuntimeException e){
             try {

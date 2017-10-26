@@ -28,27 +28,40 @@ import java.util.*;
 public class Model {
 
     private Main main;
+    private ResultModel resultModel;
+    private GameModel gameModel;
+    private PlayerModel playerModel;
+    private StadiumModel stadiumModel;
+    private PositionModel positionModel;
+    private TeamModel teamModel;
 
     /**
      * This construct the model that get the Main class as instance variable
      * @param main the Main class instance variable
      */
     public Model(Main main) {
+
         this.main = main;
+
+        resultModel = new ResultModel();
+        gameModel = new GameModel();
+        playerModel = new PlayerModel();
+        stadiumModel = new StadiumModel();
+        positionModel = new PositionModel();
+        teamModel = new TeamModel();
     }
 
     public void initHibernate() {
         System.out.println("Maven + Hibernate + MySQL");
 
         //Delete all results
-        ResultModel.deleteAllResults();
+        resultModel.deleteAllResults();
 
         // Create Queue from all games in db
-        Queue<Game> games = GameModel.queueAllGames();
+        Queue<Game> games = gameModel.queueAllGames();
 
         // Create result from each queue member and store in db, until queue empty
-        //ResultModel.createResult(session, games);
-        ResultModel.createAllResults(games);
+        resultModel.createAllResults(games);
     }
 
     /**
@@ -120,7 +133,7 @@ public class Model {
         }
 
         if(isNumeric) {
-            ResultModel.updateScores(main.getAllResFields());
+            resultModel.updateScores(main.getAllResFields());
             System.out.println("allResFields: " + main.getAllResFields());
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -150,7 +163,7 @@ public class Model {
         //Remove TextField with player name (if previous search was made)
         main.getGrid().getChildren().remove(main.getPlayerName());
 
-        List<Player> players = PlayerModel.findPlayerByName(name);
+        List<Player> players = playerModel.findPlayerByName(name);
 
         if(players.isEmpty()) {
             Text text = new Text("Player could not be found");
@@ -160,7 +173,7 @@ public class Model {
         } else {
             for (Player player : players) {
                 main.setPlayerName(new Text(player.getFname() + " " + player.getLname() + ", "
-                        + PositionModel.getPositionType(player.getPositionId())));
+                        + positionModel.getPositionType(player.getPositionId())));
                 main.getGrid().add(main.getPlayerName(), 0, 2);
             }
         }
@@ -173,7 +186,7 @@ public class Model {
 
         clearGrid();
 
-        List<Object[]> results = ResultModel.getResultTeams();
+        List<Object[]> results = resultModel.getResultTeams();
 
         for (int i = 0; i < results.size(); i++) {
             Result res = (Result) results.get(i)[0];
@@ -181,8 +194,8 @@ public class Model {
 
             Integer gameId = game.getId();
 
-            String team1Name = TeamModel.getTeamName(game.getTeam1Id());
-            String team2Name = TeamModel.getTeamName(game.getTeam2Id());
+            String team1Name = teamModel.getTeamName(game.getTeam1Id());
+            String team2Name = teamModel.getTeamName(game.getTeam2Id());
 
             Integer team1Score = res.getTeam1Score();
             Integer team2Score = res.getTeam2Score();
@@ -239,7 +252,7 @@ public class Model {
 
         clearGrid();
 
-        List<Game> games = GameModel.getAllGames();
+        List<Game> games = gameModel.getAllGames();
 
         for (int i = 0; i < games.size(); i++) { ;
             Game game = games.get(i);
@@ -248,10 +261,10 @@ public class Model {
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             String dateStr = df.format(date);
 
-            String stadiumName = StadiumModel.getStadiumName(game.getStadiumId());
+            String stadiumName = stadiumModel.getStadiumName(game.getStadiumId());
 
-            String team1Name = TeamModel.getTeamName(game.getTeam1Id());
-            String team2Name = TeamModel.getTeamName(game.getTeam2Id());
+            String team1Name = teamModel.getTeamName(game.getTeam1Id());
+            String team2Name = teamModel.getTeamName(game.getTeam2Id());
 
 
             Text dateTitle = new Text("Date");
@@ -285,10 +298,10 @@ public class Model {
         System.out.println("Executing link 3 (ranking table)");
         clearGrid();
 
-        List<Object[]> res = ResultModel.getResultTeams();
+        List<Object[]> res = resultModel.getResultTeams();
 
-        Map<Integer, Integer> scoreTable = ResultModel.createScoreTable(res);
-        List<cScore> scoreList = ResultModel.sortScoreTable(scoreTable);
+        Map<Integer, Integer> scoreTable = resultModel.createScoreTable(res);
+        List<cScore> scoreList = resultModel.sortScoreTable(scoreTable);
 
         Text rankingTitle = new Text("Ranking Table");
         rankingTitle.setFont(Font.font("Arial", FontWeight.BOLD, 16));
